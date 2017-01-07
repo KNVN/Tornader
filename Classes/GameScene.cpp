@@ -925,7 +925,7 @@ void GAME::update(float dt)
 	{
 		SpawnObjectUpdate = false;
 		ObjectSpawnNumber = (rand() % 3) + 1;
-		SpawnObjectTime = (CCRANDOM_0_1()*2);
+		SpawnObjectTime = (CCRANDOM_0_1()*2) + 0.5;
 		 
 		 if (isSpawnBombUpdate == true)
 		 {
