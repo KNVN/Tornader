@@ -5,10 +5,13 @@
 USING_NS_CC;
 using namespace std;
 using namespace CocosDenshion;
-#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if SDKBOX_ENABLED
 #include "pluginadmob/PluginAdMob.h"
 #include "pluginfacebook/PluginFacebook.h"
 using namespace sdkbox;
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+#include "StartAppPlugin.h"
 #endif
 Scene* GAME::createScene()
 {
@@ -34,7 +37,6 @@ bool GAME::init()
     {
         return false;
     }
-	
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	 begin_bg = Sprite::create("graphics/background-begin.png");//Begin_background
@@ -360,10 +362,12 @@ bool GAME::init()
 		case ui::Widget::TouchEventType::ENDED:
 		{
 												  audio->playEffect("sounds/select.wav");
-#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 												  if(isShowBigAd){
 													  isShowBigAd = false;
-													  PluginAdMob::show("gameover");}
+													   startappiOS().sharedInstance()->showAd();
+													   startappiOS().sharedInstance()->loadAd();
+													  }
 													  else{
 												  PluginFacebook::login(); 
 												  sdkbox::PluginFacebook::requestReadPermissions({ FB_PERM_READ_PUBLIC_PROFILE, FB_PERM_READ_USER_FRIENDS });
@@ -655,10 +659,6 @@ void GAME::exit()
 #endif
 
 	Director::getInstance()->end();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
 }
 void GAME::st_ExitGame()
 {
@@ -748,6 +748,10 @@ void GAME::PauseButton()
 			audio->playEffect("sounds/select.wav");
 			auto ReplaceScene = GAME::createScene();
 			Director::getInstance()->replaceScene(ReplaceScene);
+			#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+startappiOS().sharedInstance()->showAd();
+startappiOS().sharedInstance()->loadAd();
+#endif
 		}
 		break;
 		default:
@@ -812,8 +816,9 @@ void GAME::PauseButton()
 		case ui::Widget::TouchEventType::ENDED:
 		{
 			audio->playEffect("sounds/select.wav");
-#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-			PluginAdMob::show("gameover");
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+startappiOS().sharedInstance()->showAd();
+startappiOS().sharedInstance()->loadAd();
 #endif
 			
 			auto BackScene = MenuGame::createScene();
@@ -1892,14 +1897,14 @@ void GAME::PreSolve(b2Contact* contact, const b2Manifold* oldManifold){}
 void GAME::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse){}
 void GAME::ShowBanner()
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)	
+#if SDKBOX_ENABLED	
 
 		PluginAdMob::show("home");
 #endif
 }
 void GAME::HideBanner()
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)	
+#if SDKBOX_ENABLED	
 	if(PluginAdMob::isAvailable("home"))
 	{
 		PluginAdMob::hide("home");
@@ -1908,7 +1913,7 @@ void GAME::HideBanner()
 }
 void GAME::UpdateBanner(float dt)
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)	
+#if SDKBOX_ENABLED	
 	CountToShowBanner++;
 
 	if (isShowBanner && CountToShowBanner == 30)

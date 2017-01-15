@@ -35,13 +35,10 @@ bool MenuGame::init()
 	bg->setPosition(Vec2(visibleSize.width/2+origin.x, visibleSize.height/2+origin.y));
 	bg->setScaleX((float)visibleSize.width / bg->getContentSize().width);
 	bg->setScaleY((float)visibleSize.height / bg->getContentSize().height);
-	auto ExitItem = MenuItemImage::create("graphics/exit-button.png","graphics/exit-button.png", CC_CALLBACK_1(MenuGame::ExitGame, this));
-	ExitItem->setScale((float)visibleSize.height*0.15 / ExitItem->getContentSize().height);
-	ExitItem->setPosition(Vec2(visibleSize.width - ExitItem->getBoundingBox().size.width / 2, visibleSize.height - ExitItem->getBoundingBox().size.height / 2));
     Play = MenuItemImage::create("graphics/play-button.png", "graphics/play-button(selected).png", CC_CALLBACK_1(MenuGame::PlayGame, this));
 	Play->setScale((float)visibleSize.width*0.4 / Play->getContentSize().width);
 	Play->setPosition(Vec2(visibleSize.width / 2, visibleSize.height*0.25));
-	auto menu = Menu::create(ExitItem, Play, NULL);
+	auto menu = Menu::create(Play, NULL);
 	menu->setPosition(Point::ZERO);
 	this->addChild(menu, 1);
 	this->addChild(bg, -1);
@@ -82,9 +79,6 @@ void MenuGame::ExitGame(Ref* pSender)
 
 	Director::getInstance()->end();
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
 }
 void MenuGame::PlayGame(Ref* pSender)
 {

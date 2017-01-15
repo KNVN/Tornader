@@ -6,6 +6,9 @@
 #include "pluginfacebook/PluginFacebook.h"
 using namespace sdkbox;
 #endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+#include "StartAppPlugin.h"
+#endif
 USING_NS_CC;
 
 #define PORTRAIT 0
@@ -89,6 +92,11 @@ public:
     PluginAdMob::setListener(new IMListener());
 	PluginAdMob::cache("home");
 	PluginAdMob::cache("gameover");
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+ startappiOS* startAppBridge = startappiOS().sharedInstance();
+    startAppBridge->STAInit("", "");
+    startAppBridge->loadAd();    
 #endif
     // initialize director
     auto director = Director::getInstance();
