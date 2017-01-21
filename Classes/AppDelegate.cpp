@@ -11,21 +11,6 @@ using namespace sdkbox;
 #endif
 USING_NS_CC;
 
-#define PORTRAIT 0
-#define SCREEN_WIDTH_SD     627
-#define SCREEN_HEIGHT_SD    396
-#define SCREEN_WIDTH_HD     1254
-#define SCREEN_HEIGHT_HD    792
-#define SCREEN_WIDTH_RETINA 2508
-#define SCREEN_HEIGHT_RETINA 1584
-
-#define GAME_WIDTH_SD       528
-#define GAME_HEIGHT_SD      360
-#define GAME_WIDTH_HD       1056
-#define GAME_HEIGHT_HD      704
-#define GAME_WIDTH_RETINA   2112
-#define GAME_HEIGHT_RETINA  1408
-
 AppDelegate::AppDelegate() {
 
 }
@@ -111,33 +96,51 @@ public:
         director->setOpenGLView(glview);
     }
 	auto screenSize = glview->getFrameSize();
-	auto designSize = cocos2d::Size(SCREEN_WIDTH_RETINA, SCREEN_HEIGHT_RETINA);
-	auto gameSize = cocos2d::Size(GAME_WIDTH_RETINA, GAME_HEIGHT_RETINA);
 
-	std::vector<std::string> searchPaths;
+	std::vector<std::string> resDirOrders;
 
-	if (screenSize.width <= SCREEN_WIDTH_SD) {
-		searchPaths.push_back("SD");
-		if (PORTRAIT) director->setContentScaleFactor(SCREEN_WIDTH_SD / designSize.width);
-		else director->setContentScaleFactor(SCREEN_HEIGHT_SD / designSize.height);
-		cocos2d::log("Set SD Design Res");
+	if (2048 == screenSize.width || 2048 == screenSize.height)
+	{
+		resDirOrders.push_back("ipadhd");
+		resDirOrders.push_back("ipad");
+		resDirOrders.push_back("iphonehd5");
+		resDirOrders.push_back("iphonehd");
+		resDirOrders.push_back("iphone");
+
+		glview->setDesignResolutionSize(2048, 1536, ResolutionPolicy::EXACT_FIT);
 	}
-	else if (screenSize.width <= SCREEN_WIDTH_HD) {
-		searchPaths.push_back("HD");
-		if (PORTRAIT) director->setContentScaleFactor(SCREEN_WIDTH_HD / designSize.width);
-		else director->setContentScaleFactor(SCREEN_HEIGHT_HD / designSize.height);
-		cocos2d::log("Set HD Design Res");
+	else if (1024 == screenSize.width || 1024 == screenSize.height)
+	{
+		resDirOrders.push_back("ipad");
+		resDirOrders.push_back("iphonehd5");
+		resDirOrders.push_back("iphonehd");
+		resDirOrders.push_back("iphone");
+
+		glview->setDesignResolutionSize(1024, 768, ResolutionPolicy::EXACT_FIT);
 	}
-	else {
-		searchPaths.push_back("RETINA");
-		if (PORTRAIT) director->setContentScaleFactor(SCREEN_WIDTH_RETINA / designSize.width);
-		else director->setContentScaleFactor(SCREEN_HEIGHT_RETINA / designSize.height);
-		cocos2d::log("Set RETINA Design Res");
+	else if (1136 == screenSize.width || 1136 == screenSize.height)
+	{
+		resDirOrders.push_back("iphonehd5");
+		resDirOrders.push_back("iphonehd");
+		resDirOrders.push_back("iphone");
+
+		glview->setDesignResolutionSize(1136, 640, ResolutionPolicy::EXACT_FIT);
+	}
+	else if (960 == screenSize.width || 960 == screenSize.height)
+	{
+		resDirOrders.push_back("iphonehd");
+		resDirOrders.push_back("iphone");
+
+		glview->setDesignResolutionSize(960, 640, ResolutionPolicy::EXACT_FIT);
+	}
+	else
+	{
+		resDirOrders.push_back("iphone");
+
+		glview->setDesignResolutionSize(480, 320, ResolutionPolicy::EXACT_FIT);
 	}
 
-	cocos2d::FileUtils::getInstance()->setSearchPaths(searchPaths);
-	if (PORTRAIT) glview->setDesignResolutionSize(designSize.height, designSize.width, ResolutionPolicy::EXACT_FIT);
-	else glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::EXACT_FIT);
+	cocos2d::FileUtils::getInstance()->setSearchPaths(resDirOrders);
     // turn on display FPS
     director->setDisplayStats(false);
 
